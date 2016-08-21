@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>德州计算器</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", serif;
+            margin: 0;
+        }
+        .card {
+            border: 1px solid black;
+            height: 80px;
+            width: 60px;
+            border-radius: 5px;
+            color: black;
+            font-size: 32px;
+            text-align: center;
+            line-height: 70px;
+            cursor: pointer;
+        }
+        .card > span {
+            font-size: 26px;
+        }
+        .card-inline {
+            display: inline-block;
+        }
+        #container {
+            display: flex;
+        }
+        #left {
+            flex: 1;
+        }
+        #right {
+            flex: 2;
+            margin: 10px;
+        }
+        .left-row {
+            display: flex;
+            margin: 10px;
+        }
+        .margin-10 {
+            margin: 10px;
+        }
+        .left-info {
+            flex: 1;
+        }
+        .color-red {
+            color: red;
+        }
+        .color-black {
+            color: black;
+        }
+        #card-select {
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            width: 520px;
+            background-color: #ffffff;
+            box-shadow: 0 0 5px black;
+        }
+        #card-select-kind {
+            display: flex;
+        }
+        #card-select-kind > div {
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            cursor: pointer;
+        }
+        #card-select-kind > div:nth-of-type(odd) {
+            background-color: #aaaaaa;
+        }
+        #card-select-kind > div:nth-of-type(even) {
+            background-color: #eeeeee;
+        }
+        #card-select-kind > div.selected {
+            background-color: cornflowerblue;
+        }
+        #card-select-suit {
+            height: 40px;
+        }
+        #card-select-suit > div {
+            float: left;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        #card-select-suit > div:nth-of-type(odd) {
+            background-color: #eeeeee;
+        }
+        #card-select-suit > div.selected {
+            background-color: cornflowerblue;
+        }
+        #card-select-ok {
+            position: absolute;
+            top: 40px;
+            left: 160px;
+            line-height: 40px;
+            padding: 0 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="margin-10">
+    <button>重置</button>
+    <span>模式:</span>
+</div>
+<div id="container">
+    <div id="left">
+        <div class="left-row">
+            <div class="left-card">
+                <div class="card card-inline" data-type="me" data-index="0">?</div>
+                <div class="card card-inline" data-type="me" data-index="1">?</div>
+            </div>
+            <div class="left-info">胜率80%</div>
+        </div>
+        <div class="left-row">
+            <!--<div class="card">♠K</div>-->
+        </div>
+    </div>
+    <div id="right">
+        <div>
+            <div class="card card-inline" data-type="common" data-index="0">?</div>
+            <div class="card card-inline" data-type="common" data-index="1">?</div>
+            <div class="card card-inline" data-type="common" data-index="2">?</div>
+            <div class="card card-inline" data-type="common" data-index="3">?</div>
+            <div class="card card-inline" data-type="common" data-index="4">?</div>
+        </div>
+        <div>
+            <button>计算</button>
+        </div>
+    </div>
+</div>
+<div id="card-select" style="display: none">
+    <div id="card-select-kind">
+        <div>A</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+        <div>6</div>
+        <div>7</div>
+        <div>8</div>
+        <div>9</div>
+        <div>10</div>
+        <div>J</div>
+        <div>Q</div>
+        <div>K</div>
+    </div>
+    <div id="card-select-suit">
+        <div class="color-black">♠</div>
+        <div class="color-red">♥</div>
+        <div class="color-black">♣</div>
+        <div class="color-red">♦</div>
+    </div>
+    <div id="card-select-ok">
+        <a href="javascript:" class="ok">确定</a>
+        <a href="javascript:" class="cancel">取消</a>
+    </div>
+</div>
+<script src="jquery-3.1.0.min.js"></script>
+<script>
+    var me = [null, null];
+    var common = [null, null, null, null, null];
+    var known = {
+        me: me,
+        common: common
+    };
+    jQuery(function () {
+        var selectedKind = '';
+        var selectKinds = jQuery('#card-select-kind').find('> div');
+        selectKinds.click(function () {
+            selectKinds.removeClass('selected');
+            $(this).addClass('selected');
+            selectedKind = $(this).html();
+            console.log(selectedKind);
+        });
+        var selectedSuit = '';
+        var selectSuit = jQuery('#card-select-suit').find('> div');
+        selectSuit.click(function () {
+            selectSuit.removeClass('selected');
+            $(this).addClass('selected');
+            selectedSuit = $(this).html();
+            console.log(selectedSuit);
+        });
+
+        var currentCard = null;
+        jQuery('.card').click(function (e) {
+            currentCard = $(this);
+            $('#card-select').show().offset({left: e.clientX, top: e.clientY});
+            selectKinds.removeClass('selected');
+            selectSuit.removeClass('selected');
+
+        });
+
+        jQuery('#card-select-ok').find('.ok').click(function () {
+            $('#card-select').hide();
+            if (selectedKind && selectedSuit) {
+                currentCard.html(selectedSuit + selectedKind);
+                var type = currentCard.data('type');
+                var index = currentCard.data('index');
+                known[type][Number(index)] = selectedSuit + selectedKind;
+                console.log(me, common);
+            }
+            currentCard = null;
+            selectedKind = '';
+            selectedSuit = '';
+        });
+        jQuery('#card-select-ok').find('.cancel').click(function () {
+            $('#card-select').hide();
+            currentCard = null;
+            selectedKind = '';
+            selectedSuit = '';
+        });
+    });
+</script>
+</body>
+</html>

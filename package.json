@@ -1,0 +1,24 @@
+{
+  "name": "texas-hold-em-poker-calculator",
+  "version": "0.0.1",
+  "description": "Texas hold'em Poker calculator",
+  "homepage": "https://github.com/ishowshao/texas-hold-em-poker-calculato",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "dev": "webpack -e dev --watch",
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1"
+  },
+  "dependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ishowshao/texas-hold-em-poker-calculato.git"
+  },
+  "author": "ishowshao",
+  "license": "ISC"
+}
