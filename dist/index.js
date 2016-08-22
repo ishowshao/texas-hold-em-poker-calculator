@@ -46,6 +46,7 @@
 
 	let $ = __webpack_require__(1);
 	let util = __webpack_require__(3);
+	let classifier = __webpack_require__(4);
 
 	let me = [null, null];
 	let common = [null, null, null, null, null];
@@ -85,7 +86,7 @@
 	        currentCard.html(selectedSuit + selectedKind);
 	        let type = currentCard.data('type');
 	        let index = currentCard.data('index');
-	        known[type][Number(index)] = selectedSuit + selectedKind;
+	        known[type][Number(index)] = selectedSuit + (selectedKind === '10' ? 'T' : selectedKind);
 	        console.log(me, common);
 	    }
 	    currentCard = null;
@@ -97,6 +98,29 @@
 	    currentCard = null;
 	    selectedKind = '';
 	    selectedSuit = '';
+	});
+
+	$('#calculate').click(function () {
+	    // 先判定能不能计算
+	    let common = known.common.filter(i => i);
+	    let me = known.me.filter(i => i);
+	    if (me.length === 2 && common.length >= 3) {
+	        // 转换为ID
+	        me = util.ari(me);
+	        common = util.ari(common);
+	        let mine = me.concat(common);
+	        mine.forEach(c => classifier.push(c));
+	        console.log(classifier.pattern);
+	        // 剩余牌ID
+	        let rest = util.getRestCards(mine);
+
+	        util.combine2(rest, combine => {
+	            // console.log(combine);
+	            classifier.reset();
+	            combine.concat(common).forEach(c => classifier.push(c));
+	            console.log(classifier.pattern);
+	        });
+	    }
 	});
 
 
@@ -197,6 +221,16 @@
 	    return cards.map(card => ir(card));
 	};
 
+	/**
+	 * 牌的可读数组转换为ID数组
+	 *
+	 * @param {Array} cards 可读数组
+	 * @returns {Array}
+	 */
+	const ari = cards => {
+	    return cards.map(card => ri(card));
+	};
+
 	const reduce = cards => {
 	    switch (cards) {
 	        case 'RoyalStraightFlush':
@@ -236,8 +270,150 @@
 	    return cards;
 	};
 
-	module.exports = {ir, ri, shuffle, generate, air};
+	/**
+	 * 在给定牌中选择两张的所有组合
+	 *
+	 * @param {Array} cards 给定牌
+	 * @param {Function} callback 对每个组合执行此回调
+	 */
+	const combine2 = (cards, callback) => {
+	    let combine = [0, 0];
+	    let length = cards.length;
+	    for (let i = 0; i < length; i++) {
+	        combine[0] = cards[i];
+	        for (let j = 0; j < length; j++) {
+	            if (j > i) {
+	                combine[1] = cards[j];
+	                callback(combine);
+	            }
+	        }
+	    }
+	};
 
+	module.exports = {ir, ri, shuffle, generate, air, ari, getRestCards, combine2};
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	let straightHelper = cards => {
+	    let straight = false;
+	    cards = Array.from(cards).sort((a, b) => a > b); // 去重 排序
+	    // cards = [5, 2, 1, 4, 3, 0, 6].sort((a, b) => a > b); // 去重 排序
+	    switch (cards.length) {
+	        case 5:
+	            straight = (cards[4] - cards[0] === 4);
+	            break;
+	        case 6:
+	            straight = (cards[4] - cards[0] === 4) || (cards[5] - cards[1] === 4);
+	            break;
+	        case 7:
+	            straight = (cards[4] - cards[0] === 4) || (cards[5] - cards[1] === 4) || (cards[6] - cards[2] === 4);
+	            break;
+	    }
+
+	    if (cards.length > 4 && cards[0] === 0
+	        && cards.pop() === 12
+	        && cards.pop() === 11
+	        && cards.pop() === 10
+	        && cards.pop() === 9) {
+	        straight = 2;
+	    }
+	    return straight;
+	};
+
+	module.exports = {
+	    pattern: '',
+	    reduce: null,
+	    state: {
+	        cards: [],
+	        kind: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	        suit: [0, 0, 0, 0],
+	        suitTable: [[], [], [], []],
+	        straight: new Set(),
+	    },
+	    reset: function () {
+	        this.state = {
+	            cards: [],
+	            kind: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	            suit: [0, 0, 0, 0],
+	            suitTable: [[], [], [], []],
+	            straight: new Set(),
+	        };
+	    },
+	    push: function (card) {
+	        let state = this.state;
+	        let pattern = this.pattern;
+	        let reduce = this.reduce;
+	        if (state.cards.length > 7) {
+	            return;
+	        }
+
+	        let suit = Math.floor(card / 13);
+	        let number = card % 13;
+	        state.cards.push(card);
+	        state.kind[number]++;
+	        state.suit[suit]++;
+	        state.suitTable[suit].push(number);
+	        state.straight.add(number);
+
+	        if (state.cards.length >= 5) {
+	            pattern = 'HighCard';
+
+	            // 判定牌型的顺子分类 0 不是顺子 1 普通顺子 2 TJQKA
+	            let straight = straightHelper(state.straight);
+
+	            if (state.suit.some(c => c > 4)) {
+	                pattern = 'Flush';
+	                if (straight === 2) {
+	                    pattern = 'RoyalStraightFlush';
+	                } else if (straight) {
+	                    pattern = 'StraightFlush';
+	                }
+	                // reduce
+	                for (let i = 0, suitTable = state.suitTable; i < 4; i++) {
+	                    if (suitTable[i].length > 4) {
+	                        reduce = Math.max(...suitTable[i]);
+	                        break;
+	                    }
+	                }
+	            } else {
+	                if (straight) {
+	                    pattern = 'Straight';
+	                } else {
+	                    let k4 = 0;
+	                    let k3 = 0;
+	                    let k2 = 0;
+	                    for (let i = 0, kind = state.kind; i < 13; i++) {
+	                        let c = kind[i];
+	                        if (c === 4) {
+	                            k4++;
+	                        } else if (c === 3) {
+	                            k3++;
+	                        } else if (c === 2) {
+	                            k2++;
+	                        }
+	                    }
+
+	                    if (k4) {
+	                        pattern = 'FourOfAKind';
+	                    } else if (k3) {
+	                        pattern = 'ThreeOfAKind';
+	                        if (k3 > 1 || k2 > 1) {
+	                            pattern = 'FullHouse';
+	                        }
+	                    } else if (k2 >= 2) {
+	                        pattern = 'TwoPair';
+	                    } else if (k2 === 1) {
+	                        pattern = 'OnePair';
+	                    }
+	                }
+	            }
+	        }
+	        this.pattern = pattern;
+	    }
+	};
 
 /***/ }
 /******/ ]);

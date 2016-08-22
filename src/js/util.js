@@ -71,6 +71,16 @@ const air = cards => {
     return cards.map(card => ir(card));
 };
 
+/**
+ * 牌的可读数组转换为ID数组
+ *
+ * @param {Array} cards 可读数组
+ * @returns {Array}
+ */
+const ari = cards => {
+    return cards.map(card => ri(card));
+};
+
 const reduce = cards => {
     switch (cards) {
         case 'RoyalStraightFlush':
@@ -110,4 +120,24 @@ const getRestCards = knownCards => {
     return cards;
 };
 
-module.exports = {ir, ri, shuffle, generate, air};
+/**
+ * 在给定牌中选择两张的所有组合
+ *
+ * @param {Array} cards 给定牌
+ * @param {Function} callback 对每个组合执行此回调
+ */
+const combine2 = (cards, callback) => {
+    let combine = [0, 0];
+    let length = cards.length;
+    for (let i = 0; i < length; i++) {
+        combine[0] = cards[i];
+        for (let j = 0; j < length; j++) {
+            if (j > i) {
+                combine[1] = cards[j];
+                callback(combine);
+            }
+        }
+    }
+};
+
+module.exports = {ir, ri, shuffle, generate, air, ari, getRestCards, combine2};
