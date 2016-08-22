@@ -64,6 +64,8 @@ $('#calculate').click(function () {
         common = util.ari(common);
         let mine = me.concat(common);
         mine.forEach(c => classifier.push(c));
+        let myPattern = classifier.pattern;
+        let myReduce = classifier.reduce;
         console.log(classifier.pattern);
         // 剩余牌ID
         let rest = util.getRestCards(mine);
@@ -72,7 +74,7 @@ $('#calculate').click(function () {
             // console.log(combine);
             classifier.reset();
             combine.concat(common).forEach(c => classifier.push(c));
-            console.log(classifier.pattern);
+            // console.log(classifier.pattern);
         });
     }
 });

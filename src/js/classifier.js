@@ -35,6 +35,8 @@ module.exports = {
         straight: new Set(),
     },
     reset: function () {
+        this.pattern = '';
+        this.reduce = null;
         this.state = {
             cards: [],
             kind: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -45,8 +47,8 @@ module.exports = {
     },
     push: function (card) {
         let state = this.state;
-        let pattern = this.pattern;
-        let reduce = this.reduce;
+        let pattern = '';
+        let reduce = null;
         if (state.cards.length > 7) {
             return;
         }
@@ -113,5 +115,6 @@ module.exports = {
             }
         }
         this.pattern = pattern;
+        this.reduce = reduce;
     }
 };
