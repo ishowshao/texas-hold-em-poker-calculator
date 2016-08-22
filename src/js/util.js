@@ -1,17 +1,5 @@
 const CARDS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'];
 const SUITS = ['♠', '♥', '♣', '♦'];
-const LEVEL = {
-    'RoyalStraightFlush': 9,
-    'StraightFlush': 8,
-    'FourOfAKind': 7,
-    'FullHouse': 6,
-    'Flush': 5,
-    'Straight': 4,
-    'ThreeOfAKind': 3,
-    'TwoPair': 2,
-    'OnePair': 1,
-    'HighCard': 0
-};
 
 /**
  * ID 转换为 可读字符
@@ -81,28 +69,6 @@ const ari = cards => {
     return cards.map(card => ri(card));
 };
 
-const reduce = cards => {
-    switch (cards) {
-        case 'RoyalStraightFlush':
-            break;
-        case 'StraightFlush':
-            break;
-        case 'FourOfAKind':
-            break;
-        case 'FullHouse':
-            break;
-        case 'Straight':
-            break;
-        case 'ThreeOfAKind':
-            break;
-        case 'TwoPair':
-            break;
-        case 'OnePair':
-            break;
-        case 'HighCard':
-            break;
-    }
-};
 
 /**
  * 获取剩余牌
@@ -140,4 +106,4 @@ const combine2 = (cards, callback) => {
     }
 };
 
-module.exports = {ir, ri, shuffle, generate, air, ari, getRestCards, combine2};
+module.exports = {ir, ri, shuffle, generate, air, ari, getRestCards, combine2, LEVEL};
