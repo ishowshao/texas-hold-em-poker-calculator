@@ -36,7 +36,6 @@ module.exports = {
     },
     reset: function () {
         this.state = {
-            category: '',
             cards: [],
             kind: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             suit: [0, 0, 0, 0],
