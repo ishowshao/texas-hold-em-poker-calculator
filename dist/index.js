@@ -88,7 +88,7 @@
 	        let type = currentCard.data('type');
 	        let index = currentCard.data('index');
 	        known[type][Number(index)] = selectedSuit + (selectedKind === '10' ? 'T' : selectedKind);
-	        console.log(handCards, community);
+	        console.log(holeCards, communityCards);
 	    }
 	    currentCard = null;
 	    selectedKind = '';
@@ -111,17 +111,16 @@
 	        community = util.ari(community);
 	        let mine = hole.concat(community);
 	        mine.forEach(c => classifier.push(c));
-	        let myPattern = classifier.pattern;
-	        let myReduce = classifier.reduce;
-	        console.log(classifier.pattern);
+	        let myValue = classifier.value;
+	        console.log(myValue);
 	        // 剩余牌ID
 	        let rest = util.getRestCards(mine);
 
 	        util.combine2(rest, combine => {
 	            // console.log(combine);
 	            classifier.reset();
-	            combine.concat(common).forEach(c => classifier.push(c));
-	            // console.log(classifier.pattern);
+	            combine.concat(community).forEach(c => classifier.push(c));
+	            // console.log(classifier.value);
 	        });
 	    }
 	});
@@ -272,12 +271,11 @@
 	 * 1 - normal straight
 	 * 2 - top straight AKQJT
 	 *
-	 * @param {Set} cardSet
+	 * @param {Array} cards 去除重复且排好序的数组
 	 * @returns {number}
 	 */
-	let checkStraight = cardSet => {
+	let checkStraight = cards => {
 	    let straight = 0;
-	    let cards = Array.from(cardSet).sort((a, b) => a > b); // 去重 排序
 	    switch (cards.length) {
 	        case 5:
 	            straight = (cards[4] - cards[0] === 4);
@@ -325,42 +323,42 @@
 	    return reduce;
 	};
 
+	/**
+	 * 化简葫芦
+	 *
+	 * @param {Array} kind 分类器生成的记录每种牌数量的数组
+	 * @returns {number[]}
+	 */
 	let reduceFullHouse = kind => {
-	    let reduce = [];
+	    let triplet = [];
+	    let pair = [];
 
 	    // full house 有几种特殊情况
-	    // 5556667, 5556677
+	    // 5556667, 5556677 5556689
 	    for (let i = 0; i < 13; i++) {
-	        if (kind[i] === 3) {
-	            // 找到有3张的牌,可能有两种成3的,需要两种里面大的
-	            reduce.push(i === 0 ? 13 : i); // 如果是A,处理成13,方便之后比较大小
+	        let count = kind[i];
+	        let rank = (i === 0 ? 13 : i);
+	        if (count === 3) {
+	            triplet.push(rank);
+	        }
+	        if (count === 2) {
+	            pair.push(rank);
 	        }
 	    }
-	    if (reduce.length === 2) {
-	        // case 5556667 -> 66655
-	        if (reduce[0] < reduce[1]) {
-	            let tmp = reduce[0];
-	            reduce[0] = reduce[1];
-	            reduce[1] = tmp;
-	        }
+
+	    if (triplet.length > 1) {
+	        return triplet.sort((a, b) => a < b);
 	    } else {
-	        // case 5556678 or 5556677
-	        let rank2 = [];
-	        for (let i = 0; i < 13; i++) {
-	            if (kind[i] === 2) {
-	                // find the bigger pair
-	                rank2.push(i === 0 ? 13 : i); // 如果是A,处理成13,方便之后比较大小
-	            }
-	        }
-	        if (rank2.length === 1) { // only one pair
-	            reduce.push(rank2[0]);
-	        } else { // two pair
-	            reduce.push(rank2[0] > rank2[1] ? rank2[0] : rank2[1]);
-	        }
+	        return [triplet[0], Math.max(...pair)];
 	    }
-	    return reduce;
 	};
 
+	/**
+	 * 化简两对
+	 *
+	 * @param {Array} kind 分类器生成的记录每种牌数量的数组
+	 * @returns {Array}
+	 */
 	let reduceTwoPair = kind => {
 	    let reduce = [];
 
@@ -447,8 +445,7 @@
 	    state: {
 	        cards: [],
 	        kind: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	        suit: [0, 0, 0, 0],
-	        suitTable: [[], [], [], []],
+	        suit: [[], [], [], []],
 	        straight: new Set(),
 	    },
 	    reset: function () {
@@ -459,8 +456,7 @@
 	        this.state = {
 	            cards: [],
 	            kind: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	            suit: [0, 0, 0, 0],
-	            suitTable: [[], [], [], []],
+	            suit: [[], [], [], []],
 	            straight: new Set(),
 	        };
 	    },
@@ -477,15 +473,22 @@
 	        let rank = card % 13;
 	        state.cards.push(card);
 	        state.kind[rank]++;
-	        state.suit[suit]++;
-	        state.suitTable[suit].push(rank);
+	        state.suit[suit].push(rank);
 	        state.straight.add(rank); // use to check straight
 
 	        if (state.cards.length >= 5) {
-	            // 判定牌型的顺子分类 0 不是顺子 1 普通顺子 2 TJQKA
-	            let straight = checkStraight(state.straight);
 
-	            if (state.suit.some(c => c > 4)) {
+	            // 去除重复从小到大排序的array
+	            let straightArray = Array.from(state.straight).sort((a, b) => a > b);
+
+	            // check flush first
+	            // find if some suit has 5 cards
+	            let flush = state.suit.filter(c => c.length > 4);
+
+	            if (flush.length > 0) {
+	                // if flush, only can be RoyalStraightFlush,StraightFlush,Flush
+	                // 如果是同花,只能是同花、同花顺、皇家同花顺三种,其他要么冲突要么比同花小
+	                let straight = checkStraight(flush[0].sort((a, b) => a > b));
 	                pattern = 'Flush';
 	                if (straight === 2) {
 	                    pattern = 'RoyalStraightFlush';
@@ -493,19 +496,19 @@
 	                    pattern = 'StraightFlush';
 	                }
 	                // reduce: Flush & StraightFlush always compare biggest rank card, RoyalStraightFlush all same rank
-	                for (let i = 0, suitTable = state.suitTable; i < 4; i++) {
-	                    if (suitTable[i].length > 4) {
-	                        reduce = [Math.max(...suitTable[i])];
-	                        break;
-	                    }
-	                }
+	                reduce = [Math.max(...flush[0])];
 	            } else {
 
-	                const array = Array.from(state.straight).map(a => a === 1 ? 13 : a).sort((a, b) => a < b);
+	                let straight = checkStraight(straightArray);
 
 	                if (straight) {
+	                    // 顺子的情况有可能同时也是三条、两对、一对,但是都没顺子大
 	                    pattern = 'Straight';
-	                    reduce = [array[0]];
+	                    if (straight === 2) {
+	                        reduce = [13]; // 顶顺子最大的是A
+	                    } else {
+	                        reduce = [straightArray[straightArray.length - 1]];
+	                    }
 	                } else {
 	                    let k4 = 0;
 	                    let k3 = 0;
@@ -540,7 +543,12 @@
 	                        reduce = reduceOnePair(state.kind);
 	                    } else {
 	                        pattern = 'HighCard';
-	                        reduce = array.slice(0, 4);
+	                        let l = straightArray.length;
+	                        if (straightArray[0] === 0) {
+	                            reduce = [13, straightArray[l - 1], straightArray[l - 2], straightArray[l - 3], straightArray[l - 4]];
+	                        } else {
+	                            reduce = [straightArray[l - 1], straightArray[l - 2], straightArray[l - 3], straightArray[l - 4], straightArray[l - 5]];
+	                        }
 	                    }
 	                }
 	            }

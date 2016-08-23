@@ -42,7 +42,7 @@ $('#card-select-ok').find('.ok').click(function () {
         let type = currentCard.data('type');
         let index = currentCard.data('index');
         known[type][Number(index)] = selectedSuit + (selectedKind === '10' ? 'T' : selectedKind);
-        console.log(handCards, community);
+        console.log(holeCards, communityCards);
     }
     currentCard = null;
     selectedKind = '';
@@ -65,17 +65,16 @@ $('#calculate').click(function () {
         community = util.ari(community);
         let mine = hole.concat(community);
         mine.forEach(c => classifier.push(c));
-        let myPattern = classifier.pattern;
-        let myReduce = classifier.reduce;
-        console.log(classifier.pattern);
+        let myValue = classifier.value;
+        console.log(myValue);
         // 剩余牌ID
         let rest = util.getRestCards(mine);
 
         util.combine2(rest, combine => {
             // console.log(combine);
             classifier.reset();
-            combine.concat(common).forEach(c => classifier.push(c));
-            // console.log(classifier.pattern);
+            combine.concat(community).forEach(c => classifier.push(c));
+            // console.log(classifier.value);
         });
     }
 });
