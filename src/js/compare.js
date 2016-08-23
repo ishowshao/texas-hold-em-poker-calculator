@@ -1,3 +1,6 @@
+/**
+ * 牌型等级
+ */
 const LEVEL = {
     'RoyalStraightFlush': 9,
     'StraightFlush': 8,
@@ -11,6 +14,16 @@ const LEVEL = {
     'HighCard': 0
 };
 
+/**
+ * 比较两个reduce的大小
+ * reduce1 == reduce2 返回 0
+ * reduce1 > reduce2 返回 大于0的值
+ * reduce1 < reduce2 返回 小于0的值
+ *
+ * @param {Array} reduce1
+ * @param {Array} reduce2
+ * @returns {number}
+ */
 const compareReduce = (reduce1, reduce2) => {
     let result = 0;
     let length = reduce1.length;
