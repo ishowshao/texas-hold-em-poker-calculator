@@ -1,7 +1,7 @@
 /**
  * 牌型等级
  */
-const LEVEL = {
+const RANK = {
     'RoyalStraightFlush': 9,
     'StraightFlush': 8,
     'FourOfAKind': 7,
@@ -42,7 +42,7 @@ const compareReduce = (reduce1, reduce2) => {
  * value1 == value2 返回 0
  * value1 > value2 返回 大于0的值
  * value1 < value2 返回 小于0的值
- * pattern 大小通过level计算
+ * pattern 大小通过rank计算
  * reduce 是一个数组, 牌型的需比较值的最简化,例如:
  *     金刚牌: [2, 3] 表示4张相同的牌是2 剩下一张是3
  *     葫芦: [2, 3] 表示3张相同的是2 一对是3
@@ -54,8 +54,8 @@ const compareReduce = (reduce1, reduce2) => {
  * @returns {number}
  */
 const compare = (value1, value2) => {
-    const p1 = LEVEL[value1.pattern];
-    const p2 = LEVEL[value2.pattern];
+    const p1 = RANK[value1.pattern];
+    const p2 = RANK[value2.pattern];
 
     if (p1 === p2) {
         return compareReduce(value1.reduce, value2.reduce);

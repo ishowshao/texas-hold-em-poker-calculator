@@ -48,11 +48,11 @@
 	let util = __webpack_require__(3);
 	let classifier = __webpack_require__(4);
 
-	let me = [null, null];
-	let common = [null, null, null, null, null];
+	let holeCards = [null, null];
+	let communityCards = [null, null, null, null, null];
 	let known = {
-	    me: me,
-	    common: common
+	    hole: holeCards,
+	    community: communityCards
 	};
 	let selectedKind = '';
 	let selectKinds = $('#card-select-kind').find('> div');
@@ -87,7 +87,7 @@
 	        let type = currentCard.data('type');
 	        let index = currentCard.data('index');
 	        known[type][Number(index)] = selectedSuit + (selectedKind === '10' ? 'T' : selectedKind);
-	        console.log(me, common);
+	        console.log(handCards, community);
 	    }
 	    currentCard = null;
 	    selectedKind = '';
@@ -102,13 +102,13 @@
 
 	$('#calculate').click(function () {
 	    // 先判定能不能计算
-	    let common = known.common.filter(i => i);
-	    let me = known.me.filter(i => i);
-	    if (me.length === 2 && common.length >= 3) {
+	    let community = known.community.filter(i => i);
+	    let hole = known.hole.filter(i => i);
+	    if (hole.length === 2 && community.length >= 3) {
 	        // 转换为ID
-	        me = util.ari(me);
-	        common = util.ari(common);
-	        let mine = me.concat(common);
+	        hole = util.ari(hole);
+	        community = util.ari(community);
+	        let mine = hole.concat(community);
 	        mine.forEach(c => classifier.push(c));
 	        let myPattern = classifier.pattern;
 	        let myReduce = classifier.reduce;
@@ -258,7 +258,7 @@
 	    }
 	};
 
-	module.exports = {ir, ri, shuffle, generate, air, ari, getRestCards, combine2, LEVEL};
+	module.exports = {ir, ri, shuffle, generate, air, ari, getRestCards, combine2};
 
 
 /***/ },

@@ -106,4 +106,4 @@ const combine2 = (cards, callback) => {
     }
 };
 
-module.exports = {ir, ri, shuffle, generate, air, ari, getRestCards, combine2, LEVEL};
+module.exports = {ir, ri, shuffle, generate, air, ari, getRestCards, combine2};
