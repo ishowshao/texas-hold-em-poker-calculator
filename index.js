@@ -64,17 +64,18 @@ $('#calculate').click(function () {
         hole = util.ari(hole);
         community = util.ari(community);
         let mine = hole.concat(community);
+        classifier.reset();
         mine.forEach(c => classifier.push(c));
         let myValue = classifier.value;
         console.log(myValue);
         // 剩余牌ID
         let rest = util.getRestCards(mine);
 
-        util.combine2(rest, combine => {
-            // console.log(combine);
-            classifier.reset();
-            combine.concat(community).forEach(c => classifier.push(c));
+        // util.combine2(rest, combine => {
+        //     console.log(combine);
+            // classifier.reset();
+            // combine.concat(community).forEach(c => classifier.push(c));
             // console.log(classifier.value);
-        });
+        // });
     }
 });

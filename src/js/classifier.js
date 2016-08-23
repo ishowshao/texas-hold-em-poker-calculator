@@ -23,11 +23,12 @@ let checkStraight = cards => {
 
     straight = Number(straight);
 
-    if (cards.length > 4 && cards[0] === 0
-        && cards.pop() === 12
-        && cards.pop() === 11
-        && cards.pop() === 10
-        && cards.pop() === 9) {
+    let l = cards.length;
+    if (l > 4 && cards[0] === 0
+        && cards[l - 1] === 12
+        && cards[l - 2] === 11
+        && cards[l - 3] === 10
+        && cards[l - 4] === 9) {
         straight = 2;
     }
 
@@ -218,15 +219,20 @@ module.exports = {
             if (flush.length > 0) {
                 // if flush, only can be RoyalStraightFlush,StraightFlush,Flush
                 // 如果是同花,只能是同花、同花顺、皇家同花顺三种,其他要么冲突要么比同花小
+                // reduce: Flush & StraightFlush always compare biggest rank card, RoyalStraightFlush all same rank
                 let straight = checkStraight(flush[0].sort((a, b) => a > b));
-                pattern = 'Flush';
                 if (straight === 2) {
                     pattern = 'RoyalStraightFlush';
+                    reduce = [13];
                 } else if (straight) {
                     pattern = 'StraightFlush';
+                    console.log(flush);
+                    reduce = [Math.max(...flush[0])];
+                } else {
+                    pattern = 'Flush';
+                    console.log(flush);
+                    reduce = [Math.max(...flush[0])];
                 }
-                // reduce: Flush & StraightFlush always compare biggest rank card, RoyalStraightFlush all same rank
-                reduce = [Math.max(...flush[0])];
             } else {
 
                 // 去除重复从小到大排序的array
