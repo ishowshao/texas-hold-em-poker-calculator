@@ -25,8 +25,10 @@ let straightHelper = cards => {
 };
 
 module.exports = {
-    pattern: '',
-    reduce: null,
+    value: {
+        pattern: '',
+        reduce: []
+    },
     state: {
         cards: [],
         kind: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -35,8 +37,10 @@ module.exports = {
         straight: new Set(),
     },
     reset: function () {
-        this.pattern = '';
-        this.reduce = null;
+        this.value = {
+            pattern: '',
+            reduce: []
+        };
         this.state = {
             cards: [],
             kind: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -46,6 +50,7 @@ module.exports = {
         };
     },
     push: function (card) {
+        // todo reduce
         let state = this.state;
         let pattern = '';
         let reduce = null;
