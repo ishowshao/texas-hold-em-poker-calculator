@@ -478,9 +478,6 @@
 
 	        if (state.cards.length >= 5) {
 
-	            // 去除重复从小到大排序的array
-	            let straightArray = Array.from(state.straight).sort((a, b) => a > b);
-
 	            // check flush first
 	            // find if some suit has 5 cards
 	            let flush = state.suit.filter(c => c.length > 4);
@@ -498,6 +495,9 @@
 	                // reduce: Flush & StraightFlush always compare biggest rank card, RoyalStraightFlush all same rank
 	                reduce = [Math.max(...flush[0])];
 	            } else {
+
+	                // 去除重复从小到大排序的array
+	                let straightArray = Array.from(state.straight).sort((a, b) => a > b);
 
 	                let straight = checkStraight(straightArray);
 
