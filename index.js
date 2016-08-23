@@ -1,6 +1,7 @@
 let $ = require('./src/js/jquery-3.1.0.min');
 let util = require('./src/js/util');
 let classifier = require('./src/js/classifier');
+let compare = require('./src/js/compare');
 
 let holeCards = [null, null];
 let communityCards = [null, null, null, null, null];
