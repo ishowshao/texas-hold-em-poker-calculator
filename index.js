@@ -68,14 +68,21 @@ $('#calculate').click(function () {
         mine.forEach(c => classifier.push(c));
         let myValue = classifier.value;
         console.log(myValue);
+        $('#my-info').html(myValue.pattern + myValue.reduce);
         // 剩余牌ID
         let rest = util.getRestCards(mine);
 
-        // util.combine2(rest, combine => {
-        //     console.log(combine);
-            // classifier.reset();
-            // combine.concat(community).forEach(c => classifier.push(c));
-            // console.log(classifier.value);
-        // });
+        let count = 0;
+        let win = 0;
+        util.combine2(rest, combine => {
+            count++;
+            classifier.reset();
+            combine.concat(community).forEach(c => classifier.push(c));
+            if (compare(myValue, classifier.value) > 0) {
+                win++;
+            }
+        });
+        let rate = (win / count * 100).toFixed(2);
+        $('#my-info').append(`<div>count:${count} win:${win} rate: ${rate}%</div>`);
     }
 });
