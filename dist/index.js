@@ -316,7 +316,7 @@
 	        if (kind[i] === 4) {
 	            // 找到有4张的牌,只可能有一种成4张
 	            reduce[0] = (i === 0 ? 13 : i); // 如果是A,处理成13,方便之后比较大小
-	        } else {
+	        } else if (kind[i] > 0) {
 	            // 如果不是4张的,记录最大的kicker
 	            let rank = (i === 0 ? 13 : i);
 	            reduce[1] = (rank > reduce[1] ? rank : reduce[1]);
@@ -499,7 +499,7 @@
 	                } else {
 	                    pattern = 'Flush';
 	                    console.log(flush);
-	                    reduce = [Math.max(...flush[0])];
+	                    reduce = (flush[0].indexOf(0) !== -1 ? [13] : [Math.max(...flush[0])]);
 	                }
 	            } else {
 
