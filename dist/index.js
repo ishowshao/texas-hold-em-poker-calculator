@@ -514,11 +514,9 @@
 	                    reduce = [13];
 	                } else if (straight) {
 	                    pattern = 'StraightFlush';
-	                    console.log(flush);
 	                    reduce = [Math.max(...flush[0])];
 	                } else {
 	                    pattern = 'Flush';
-	                    console.log(flush);
 	                    reduce = (flush[0].indexOf(0) !== -1 ? [13] : [Math.max(...flush[0])]);
 	                }
 	            } else {
