@@ -484,7 +484,6 @@
 	        };
 	    },
 	    push: function (card) {
-	        // todo reduce
 	        let state = this.state;
 	        let pattern = '';
 	        let reduce = [];
