@@ -38,10 +38,13 @@ $('.card').click(function (e) {
 $('#card-select-ok').find('.ok').click(function () {
     $('#card-select').hide();
     if (selectedKind && selectedSuit) {
-        currentCard.html(selectedSuit + selectedKind);
         let type = currentCard.data('type');
         let index = currentCard.data('index');
-        known[type][Number(index)] = selectedSuit + (selectedKind === '10' ? 'T' : selectedKind);
+        let str = selectedSuit + (selectedKind === '10' ? 'T' : selectedKind);
+        if (holeCards.indexOf(str) === -1 && communityCards.indexOf(str) === -1) {
+            known[type][Number(index)] = str;
+            currentCard.html(selectedSuit + selectedKind);
+        }
         console.log(holeCards, communityCards);
     }
     currentCard = null;
