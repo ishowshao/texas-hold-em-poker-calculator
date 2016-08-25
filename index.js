@@ -54,6 +54,17 @@ $('#card-select-ok').find('.cancel').click(function () {
     selectedKind = '';
     selectedSuit = '';
 });
+$('#card-select-ok').find('.delete').click(function () {
+    $('#card-select').hide();
+    currentCard.html('?');
+    let type = currentCard.data('type');
+    let index = currentCard.data('index');
+    known[type][Number(index)] = null;
+    console.log(holeCards, communityCards);
+    currentCard = null;
+    selectedKind = '';
+    selectedSuit = '';
+});
 
 $('#calculate').click(function () {
     // 先判定能不能计算
