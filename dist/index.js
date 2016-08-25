@@ -44,6 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// TODO 剩余两张可组牌型以及比率
 	let $ = __webpack_require__(1);
 	let util = __webpack_require__(3);
 	let classifier = __webpack_require__(4);

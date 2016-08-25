@@ -1,3 +1,4 @@
+// TODO 剩余两张可组牌型以及比率
 let $ = require('./src/js/jquery-3.1.0.min');
 let util = require('./src/js/util');
 let classifier = require('./src/js/classifier');
