@@ -83,7 +83,7 @@ $('#calculate').click(function () {
         mine.forEach(c => classifier.push(c));
         let myValue = classifier.value;
         console.log(myValue);
-        $('#my-info').html(myValue.pattern + myValue.reduce);
+        $('#my-info').html(`<div>${myValue.pattern} reduce:${myValue.reduce}</div>`);
         // 剩余牌ID
         let rest = util.getRestCards(mine);
 
@@ -95,6 +95,8 @@ $('#calculate').click(function () {
             combine.concat(community).forEach(c => classifier.push(c));
             if (compare(myValue, classifier.value) > 0) {
                 win++;
+            } else {
+                console.log(combine, classifier.value);
             }
         });
         let rate = (win / count * 100).toFixed(2);

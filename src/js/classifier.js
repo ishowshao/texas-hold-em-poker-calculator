@@ -1,8 +1,8 @@
 /**
  * helper to check straight type
  * 0 - not straight
- * 1 - normal straight
- * 2 - top straight AKQJT
+ * n - normal straight
+ * 13 - top straight AKQJT
  *
  * @param {Array} cards 去除重复且排好序的数组
  * @returns {number}
@@ -11,17 +11,18 @@ let checkStraight = cards => {
     let straight = 0;
     switch (cards.length) {
         case 5:
-            straight = (cards[4] - cards[0] === 4);
+            straight = (cards[4] - cards[0] === 4 ? cards[4] : 0);
             break;
         case 6:
-            straight = (cards[4] - cards[0] === 4) || (cards[5] - cards[1] === 4);
+            straight = (cards[4] - cards[0] === 4 ? cards[4] : 0)
+                || (cards[5] - cards[1] === 4 ? cards[5] : 0);
             break;
         case 7:
-            straight = (cards[4] - cards[0] === 4) || (cards[5] - cards[1] === 4) || (cards[6] - cards[2] === 4);
+            straight = (cards[4] - cards[0] === 4 ? cards[4] : 0)
+                || (cards[5] - cards[1] === 4 ? cards[5] : 0)
+                || (cards[6] - cards[2] === 4 ? cards[6] : 0);
             break;
     }
-
-    straight = Number(straight);
 
     let l = cards.length;
     if (l > 4 && cards[0] === 0
@@ -29,7 +30,7 @@ let checkStraight = cards => {
         && cards[l - 2] === 11
         && cards[l - 3] === 10
         && cards[l - 4] === 9) {
-        straight = 2;
+        straight = 13;
     }
 
     return straight;
@@ -220,12 +221,12 @@ module.exports = {
                 // 如果是同花,只能是同花、同花顺、皇家同花顺三种,其他要么冲突要么比同花小
                 // reduce: Flush & StraightFlush always compare biggest rank card, RoyalStraightFlush all same rank
                 let straight = checkStraight(flush[0].sort((a, b) => a > b));
-                if (straight === 2) {
+                if (straight === 13) {
                     pattern = 'RoyalStraightFlush';
                     reduce = [13];
                 } else if (straight) {
                     pattern = 'StraightFlush';
-                    reduce = [Math.max(...flush[0])];
+                    reduce = [straight];
                 } else {
                     pattern = 'Flush';
                     reduce = (flush[0].indexOf(0) !== -1 ? [13] : [Math.max(...flush[0])]);
@@ -240,11 +241,7 @@ module.exports = {
                 if (straight) {
                     // 顺子的情况有可能同时也是三条、两对、一对,但是都没顺子大
                     pattern = 'Straight';
-                    if (straight === 2) {
-                        reduce = [13]; // 顶顺子最大的是A
-                    } else {
-                        reduce = [straightArray[straightArray.length - 1]];
-                    }
+                    reduce = [straight];
                 } else {
                     let k4 = 0;
                     let k3 = 0;
