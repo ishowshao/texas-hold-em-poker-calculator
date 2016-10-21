@@ -49,9 +49,21 @@
 	const classifier = __webpack_require__(2);
 	const compare = __webpack_require__(3);
 
-	const holeCards = [null, null];
-	const communityCards = [null, null, null, null, null];
+	const hands = [null, null];
+	const boards = [null, null, null, null, null];
 
+	const header = new Vue({
+	    el: '#header',
+	    data: {
+	        showMenu: false
+	    },
+	    methods: {
+	        toggleMenu: function () {
+	            console.log(this.showMenu);
+	            this.showMenu = !this.showMenu
+	        }
+	    }
+	});
 
 /***/ },
 /* 1 */

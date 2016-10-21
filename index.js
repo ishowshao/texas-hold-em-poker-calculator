@@ -5,3 +5,16 @@ const compare = require('./src/js/compare');
 
 const hands = [null, null];
 const boards = [null, null, null, null, null];
+
+const header = new Vue({
+    el: '#header',
+    data: {
+        showMenu: false
+    },
+    methods: {
+        toggleMenu: function () {
+            console.log(this.showMenu);
+            this.showMenu = !this.showMenu
+        }
+    }
+});

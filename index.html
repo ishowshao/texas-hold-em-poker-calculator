@@ -7,17 +7,20 @@
     <script src="src/js/vue.js"></script>
 </head>
 <body>
-<header>
-    <h1><a href="index.html">Poker Assistant</a></h1>
-    <a class="menu-button" href="javascript:"></a>
-</header>
-<nav class="menu">
-    <div class="menu-title">
-        <span class="">Poker Assistant</span>
-    </div>
-    <div class="menu-item-container">翻牌后手牌强弱</div>
-    <div class="menu-item-container">常用资料</div>
-</nav>
+<div id="header">
+    <header>
+        <h1><a href="index.html">Poker Assistant</a></h1>
+        <a class="menu-button" href="javascript:" @click="toggleMenu"></a>
+    </header>
+    <nav class="menu" v-if="showMenu">
+        <div class="menu-title">
+            <span class="">Poker Assistant</span>
+        </div>
+        <div class="menu-item-container">翻牌后手牌强弱</div>
+        <div class="menu-item-container">常用资料</div>
+    </nav>
+    <div class="menu-mask" v-if="showMenu" @click="toggleMenu"></div>
+</div>
 <div id="container" class="main-content">
     <!-- 翻牌后手牌强弱分析 -->
     <section id="after-flop" class="after-flop">
