@@ -4,37 +4,44 @@
     <meta charset="utf-8">
     <title>德州计算器</title>
     <link rel="stylesheet" href="src/css/index.css">
+    <script src="src/js/vue.js"></script>
 </head>
 <body>
-<div class="margin-10">
-    <button>重置</button>
-    <span>模式:</span>
-</div>
-<div id="container">
-    <div id="left">
-        <div class="left-row">
-            <div class="left-card">
+<header>
+    <h1><a href="index.html">Poker Assistant</a></h1>
+    <a class="menu-button" href="javascript:"></a>
+</header>
+<nav class="menu">
+    <div class="menu-title">
+        <span class="">Poker Assistant</span>
+    </div>
+    <div class="menu-item-container">翻牌后手牌强弱</div>
+    <div class="menu-item-container">常用资料</div>
+</nav>
+<div id="container" class="main-content">
+    <!-- 翻牌后手牌强弱分析 -->
+    <section id="after-flop" class="after-flop">
+        <div class="hand-cards-container">
+            <div class="hand-cards">
                 <div class="card card-inline" data-type="hole" data-index="0">?</div>
                 <div class="card card-inline" data-type="hole" data-index="1">?</div>
             </div>
-            <div id="my-info" class="left-info">胜率80%</div>
         </div>
-        <div class="left-row">
-            <!--<div class="card">♠K</div>-->
+        <div class="board-cards-container">
+            <div>
+                <div class="card card-inline" data-type="community" data-index="0">?</div>
+                <div class="card card-inline" data-type="community" data-index="1">?</div>
+                <div class="card card-inline" data-type="community" data-index="2">?</div>
+                <div class="card card-inline" data-type="community" data-index="3">?</div>
+                <div class="card card-inline" data-type="community" data-index="4">?</div>
+            </div>
+            <div>
+                <button id="calculate">计算</button>
+            </div>
         </div>
-    </div>
-    <div id="right">
-        <div>
-            <div class="card card-inline" data-type="community" data-index="0">?</div>
-            <div class="card card-inline" data-type="community" data-index="1">?</div>
-            <div class="card card-inline" data-type="community" data-index="2">?</div>
-            <div class="card card-inline" data-type="community" data-index="3">?</div>
-            <div class="card card-inline" data-type="community" data-index="4">?</div>
-        </div>
-        <div>
-            <button id="calculate">计算</button>
-        </div>
-    </div>
+    </section>
+    <!-- 常用资料 -->
+    <section class="function-2"></section>
 </div>
 <div id="card-select" style="display: none">
     <div id="card-select-kind">
