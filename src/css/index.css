@@ -104,6 +104,7 @@ nav.menu {
 
 .card-inline {
     display: inline-block;
+    margin-right: 8px;
 }
 
 .after-flop {
