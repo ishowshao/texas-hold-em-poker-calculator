@@ -106,4 +106,14 @@ const combine2 = (cards, callback) => {
     }
 };
 
-module.exports = {ir, ri, shuffle, generate, air, ari, getRestCards, combine2};
+const isPocketPair = (cardA, cardB) => {
+    return cardA % 13 === cardB % 13;
+};
+
+const isPocketAK = (cardA, cardB) => {
+    let hasA = (cardA % 13 === 0) || (cardB % 13 === 0);
+    let hasK = (cardA % 13 === 12) || (cardB % 13 === 12);
+    return hasA && hasK;
+};
+
+module.exports = {ir, ri, shuffle, generate, air, ari, getRestCards, combine2, isPocketPair, isPocketAK};
