@@ -1,5 +1,5 @@
 /**
- * n人桌，口袋对 遇上 口袋对 的概率计算
+ * 计算起手拿口袋对的概率
  */
 const util = require('../src/js/util');
 const generate = util.generate;
