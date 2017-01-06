@@ -115,7 +115,9 @@ let reduceTwoPair = kind => {
     single.sort((a, b) => a < b);
     reduce[0] = pair[0];
     reduce[1] = pair[1];
-    reduce[2] = single[0];
+    reduce[2] = pair.length > 2
+        ? (pair[pair.length - 1] > single[0] ? pair[pair.length - 1] : single[0])
+        : single[0];
 
     return reduce;
 };
@@ -225,7 +227,8 @@ class Classifier {
                     reduce = [straight];
                 } else {
                     pattern = 'Flush';
-                    reduce = (flush[0].indexOf(0) !== -1 ? [13] : [Math.max(...flush[0])]);
+                    // reduce = (flush[0].indexOf(0) !== -1 ? [13] : [Math.max(...flush[0])]);
+                    reduce = flush[0].map(i => i === 0 ? 13 : i).sort((a, b) => a < b).slice(0, 5); // fix bug 同花要选前5大
                 }
             } else {
 
