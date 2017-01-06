@@ -183,23 +183,28 @@ class Classifier {
             suit: [[], [], [], []],
             straight: new Set(),
         };
+        this.prepared = false;
     }
 
     prepare() {
-        let cards = this.cards;
-        let state = this.state;
-        for (let i = 0, l = cards.length; i < l; i++) {
-            let card = cards[i];
-            let suit = Math.floor(card / 13);
-            let rank = card % 13;
-            state.cards.push(card);
-            state.kind[rank]++;
-            state.suit[suit].push(rank);
-            state.straight.add(rank); // use to check straight
+        if (!this.prepared) {
+            let cards = this.cards;
+            let state = this.state;
+            for (let i = 0, l = cards.length; i < l; i++) {
+                let card = cards[i];
+                let suit = Math.floor(card / 13);
+                let rank = card % 13;
+                state.cards.push(card);
+                state.kind[rank]++;
+                state.suit[suit].push(rank);
+                state.straight.add(rank); // use to check straight
+            }
+            this.prepared = true;
         }
     }
 
     classify() {
+        this.prepare();
         let pattern = '';
         let reduce = [];
         let state = this.state;
