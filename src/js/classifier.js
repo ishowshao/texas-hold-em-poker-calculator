@@ -172,44 +172,37 @@ let reduceOnePair = kind => {
     return [pair, single[0], single[1], single[2]];
 };
 
-module.exports = {
-    value: {
-        pattern: '',
-        reduce: []
-    },
-    state: {
-        cards: [],
-        kind: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        suit: [[], [], [], []],
-        straight: new Set(),
-    },
-    reset: function () {
-        this.value = {
-            pattern: '',
-            reduce: []
-        };
+class Classifier {
+    constructor(cards) {
+        this.cards = cards;
+        this.pattern = '';
+        this.reduce = [];
         this.state = {
             cards: [],
             kind: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             suit: [[], [], [], []],
             straight: new Set(),
         };
-    },
-    push: function (card) {
+    }
+
+    prepare() {
+        let cards = this.cards;
         let state = this.state;
+        for (let i = 0, l = cards.length; i < l; i++) {
+            let card = cards[i];
+            let suit = Math.floor(card / 13);
+            let rank = card % 13;
+            state.cards.push(card);
+            state.kind[rank]++;
+            state.suit[suit].push(rank);
+            state.straight.add(rank); // use to check straight
+        }
+    }
+
+    classify() {
         let pattern = '';
         let reduce = [];
-        if (state.cards.length > 7) {
-            return;
-        }
-
-        let suit = Math.floor(card / 13);
-        let rank = card % 13;
-        state.cards.push(card);
-        state.kind[rank]++;
-        state.suit[suit].push(rank);
-        state.straight.add(rank); // use to check straight
-
+        let state = this.state;
         if (state.cards.length >= 5) {
 
             // check flush first
@@ -286,7 +279,8 @@ module.exports = {
                 }
             }
         }
-        this.value.pattern = pattern;
-        this.value.reduce = reduce;
+        return {pattern, reduce};
     }
-};
+}
+
+module.exports = Classifier;
