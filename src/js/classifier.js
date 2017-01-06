@@ -14,13 +14,13 @@ let checkStraight = cards => {
             straight = (cards[4] - cards[0] === 4 ? cards[4] : 0);
             break;
         case 6:
-            straight = (cards[4] - cards[0] === 4 ? cards[4] : 0)
-                || (cards[5] - cards[1] === 4 ? cards[5] : 0);
+            straight = (cards[5] - cards[1] === 4 ? cards[5] : 0)
+                || (cards[4] - cards[0] === 4 ? cards[4] : 0);
             break;
         case 7:
-            straight = (cards[4] - cards[0] === 4 ? cards[4] : 0)
+            straight = (cards[6] - cards[2] === 4 ? cards[6] : 0)
                 || (cards[5] - cards[1] === 4 ? cards[5] : 0)
-                || (cards[6] - cards[2] === 4 ? cards[6] : 0);
+                || (cards[4] - cards[0] === 4 ? cards[4] : 0);
             break;
     }
 
@@ -175,8 +175,6 @@ let reduceOnePair = kind => {
 class Classifier {
     constructor(cards) {
         this.cards = cards;
-        this.pattern = '';
-        this.reduce = [];
         this.state = {
             cards: [],
             kind: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
