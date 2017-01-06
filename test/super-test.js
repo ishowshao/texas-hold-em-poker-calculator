@@ -4,6 +4,7 @@
 const util = require('../src/js/util');
 const compare = require('../src/js/compare');
 const Classifier = require('../src/js/classifier');
+const fs = require('fs');
 
 const getCard = (used) => {
     while (true) {
@@ -29,7 +30,7 @@ const levelCount = {
 
 const playerCount = 9;
 
-let simulateCount = 300000;
+let simulateCount = 10000000;
 const result = new Map();
 
 for (let t = 0; t < simulateCount; t++) {
@@ -84,5 +85,5 @@ for (let t = 0; t < simulateCount; t++) {
 
 let resultArray = Array.from(result);
 resultArray = resultArray.sort((a, b) => b[1] - a[1]);
-console.log(resultArray);
+fs.writeFileSync('result.log', resultArray.join('\n'), 'utf8');
 
