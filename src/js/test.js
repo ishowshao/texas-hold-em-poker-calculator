@@ -1,12 +1,17 @@
-let classifier = require('./classifier');
-let util = require('./util');
+const Classifier = require('./classifier');
+const util = require('./util');
 
 console.time('speed');
-for (let i = 0; i < 170000; i++) {
+for (let i = 0; i < 10000000; i++) {
     let cards = util.generate(7);
-// console.log(util.air(cards));
-    cards.forEach(card => classifier.push(card));
-    classifier.reset();
-// console.log(classifier.pattern);
+    // console.log(util.air(cards));
+    const classifier = new Classifier(cards);
+    const result = classifier.classify();
+    if (result.pattern === 'StraightFlush' || result.pattern === 'RoyalStraightFlush') {
+        console.log(cards, util.air(cards));
+        console.log(result);
+
+    }
+    // StraightFlush RoyalStraightFlush
 }
 console.timeEnd('speed');
