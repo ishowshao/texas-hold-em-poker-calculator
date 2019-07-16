@@ -1,10 +1,12 @@
-var webpack = require('webpack');
+const path = require('path');
+
 module.exports = {
+    mode: 'development',
     entry: {
         index: './index.js'
     },
     output: {
-        path: './dist',
+        path: path.resolve(__dirname, 'dist'),
         filename: '[name].js'
     }
 };

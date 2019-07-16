@@ -6,11 +6,12 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf dist",
-    "dev": "webpack -e dev --watch",
+    "dev": "webpack --watch",
     "build": "webpack"
   },
   "devDependencies": {
-    "webpack": "^4.35.3"
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.6"
   },
   "dependencies": {},
   "repository": {
